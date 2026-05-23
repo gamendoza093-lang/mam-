@@ -220,26 +220,43 @@ function openEnvelope() {
 
 /* ─── LILY ANIMATION ─── */
 function animateLilies() {
-    // Orden de aparición: del centro hacia afuera, con delay escalonado
-    const order = ['lily2', 'lily1', 'lily3', 'lily4', 'lily5', 'lily6', 'lily7'];
+    const order  = ['lily2', 'lily1', 'lily3', 'lily4', 'lily5', 'lily6', 'lily7'];
     const delays = [0, 280, 280, 500, 500, 700, 700];
 
     order.forEach((id, i) => {
         setTimeout(() => {
             const el = document.getElementById(id);
-            if (el) el.classList.add('bloomed');
+            if (!el) return;
+
+            // Hacer visible el grupo (tallo empieza a dibujarse)
+            el.classList.add('bloomed');
+
+            // Animar cada .bloom con escala SVG nativa
+            el.querySelectorAll('.bloom').forEach(bloom => {
+                bloom.style.transformOrigin = 'center center';
+                bloom.style.transform = 'scale(0)';
+                bloom.style.transition = 'none';
+                setTimeout(() => {
+                    bloom.style.transition = 'transform 0.9s cubic-bezier(0.34,1.56,0.64,1), opacity 0.6s ease';
+                    bloom.style.transform = 'scale(1)';
+                    bloom.style.opacity = '1';
+                }, 650);
+            });
+
         }, delays[i]);
     });
 
     // Mariposas después de que florezcan
     setTimeout(() => {
-        document.getElementById('bf1').classList.add('visible');
-        document.getElementById('bf2').classList.add('visible');
-    }, 1600);
+        const b1 = document.getElementById('bf1');
+        const b2 = document.getElementById('bf2');
+        if (b1) b1.classList.add('visible');
+        if (b2) b2.classList.add('visible');
+    }, 1900);
 
     // Mensaje final
     setTimeout(() => {
         const msg = document.getElementById('lilyMessage');
         if (msg) msg.classList.add('visible');
-    }, 2200);
+    }, 2500);
 }
